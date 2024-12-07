@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Documentação do Projeto Elo Maluco</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            box-sizing: border-box;
+            position: fixed; 
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+
+        .content {
+            margin-left: 250px; 
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .sidebar .logo {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .sidebar .nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar .nav ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar .nav ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+
+        .sidebar .nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        h1, h2, h3 {
+            margin-top: 0;
+        }
+
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            overflow: auto;
+            font-size: 0.9em;
+        }
+
+        p, li {
+            font-size: 0.95em;
+            line-height: 1.5em;
+        }
+
+        code {
+            background: #eef;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">Elo Maluco - Docs</div>
+        <nav class="nav">
+            <ul>
+                <li><a href="#introducao">Introdução</a></li>
+                <li><a href="#arquivos">Visão Geral dos Arquivos</a></li>
+                <li><a href="#elomaluco">EloMaluco.cpp/h</a></li>
+                <li><a href="#peca">Peca.cpp/h</a></li>
+                <li><a href="#tinyxml2">tinyxml2.cpp/h</a></li>
+                <li><a href="#teste-xml">teste.xml</a></li>
+                <li><a href="#main">main.cpp</a></li>
+                <li><a href="#Autores">Autores</a></li>
+               
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <section id="introducao">
+            <h1>Introdução</h1>
+            <p>Este documento apresenta a documentação detalhada do projeto "Elo Maluco", um código em C++ que manipula uma matriz linear que representa o . O código faz uso da biblioteca <code>tinyxml2</code> para leitura e escrita de estados em arquivos XML, além de fornecer funcionalidades para gerar estados aleatórios, aplicar ações na matriz e solucionar o jogo automaticamente usando busca A* com heurística Manhattan.</p>
+        </section>
+
+        <section id="arquivos">
+            <h2>Visão Geral dos Arquivos</h2>
+            <p>O projeto é composto pelos seguintes arquivos principais:</p>
+            <ul>
+                <li><strong>EloMaluco.cpp/h</strong>: Lógica principal do jogo (estado do ELo, ações, resolver jogo).</li>
+                <li><strong>Peca.cpp/h</strong>: Definição da classe <code>Peca</code> que representa cada peça do Elo.</li>
+                <li><strong>tinyxml2.cpp/h</strong>: Biblioteca externa para manipulação de XML.</li>
+                <li><strong>teste.xml</strong>: Exemplo de estado inicial do Elo em formato XML.</li>
+                <li><strong>main.cpp</strong>: Ponto de entrada do programa, interagindo com o usuário.</li>
+            </ul>
+        </section>
+
+        <section id="elomaluco">
+            <h2>EloMaluco.cpp/h</h2>
+            <p>A classe <code>EloMaluco</code> é o coração do jogo. Ela gerencia o estado do Elo, que consiste em 16 posições, cada uma representada por uma string de 3 caracteres (ex.: "vms" - vermelho meio superior, "amm" - amarelo meio meio, "vzo" - vazio).</p>
+            <p>As responsabilidades da classe incluem:</p>
+            <ul>
+                <li><strong>Estado do Elo:</strong> Armazenado em uma única string de 48 caracteres.</li>
+                <li><strong>Carregamento / Salvamento XML:</strong> Usa <code>tinyxml2</code> para carregar estados de arquivo (por ex. <code>teste.xml</code>) e salvar o estado atual.</li>
+                <li><strong>Ações:</strong> Aplicar movimentos como rotacionar linhas superior/inferior, mover a peça vazia para cima ou baixo.</li>
+                <li><strong>Resolução Automática:</strong> Função <code>resolverJogo()</code> implementa A* usando heurística Manhattan para encontrar sequência de ações até o estado final.</li>
+            </ul>
+
+            <h3>Métodos Principais</h3>
+            <ul>
+                <li><code>EloMaluco::EloMaluco()</code>: Construtor que inicializa o estado vazio.</li>
+                <li><code>getPeca(linha, coluna)</code>: Retorna a peça numa dada posição.</li>
+                <li><code>setPeca(linha, coluna, peca)</code>: Define a peça numa dada posição.</li>
+                <li><code>encontrarVazio()</code>: Localiza a posição da peça vazia "vzo".</li>
+                <li><code>carregarEstadoInicial(arquivoXML)</code>: Carrega estado e histórico do arquivo XML.</li>
+                <li><code>gerarEstadoAleatorio()</code>: Embaralha as peças para criar um estado inicial aleatório.</li>
+                <li><code>salvarEstadoEmArquivo(arquivoXML)</code>: Salva o estado e histórico em XML.</li>
+                <li><code>exibirEstadoAtual()</code>: Imprime o Elo no console.</li>
+                <li><code>aplicarAcao(acao)</code>: Aplica uma ação (ex.: "rsd" rotaciona linha superior à direita).</li>
+                <li><code>verificarSolucao()</code>: Checa se o estado atual é o estado final desejado.</li>
+                <li><code>resolverJogo()</code>: Executa A* para encontrar a solução ótima.</li>
+            </ul>
+
+            <h3>Heurística Manhattan</h3>
+            <p>Para orientar a busca A*, a heurística Manhattan soma as distâncias (em termos de movimentos horizontais e verticais) de cada peça até sua posição final esperada, servindo como uma estimativa do quão longe o estado atual está da meta.</p>
+        </section>
+
+        <section id="peca">
+            <h2>Peca.cpp/h</h2>
+            <p>A classe <code>Peca</code> representa uma única peça do Elo. Cada peça é identificada por uma cor (ex.: "vm" para vermelho, "am" para amarelo, "vr" para verde, "br" para branco, "vz" para vazio) e uma parte ('s' superior, 'm' meio, 'i' inferior, 'o' vazio).</p>
+            <p>Exemplo: "vms" = vermelho + meio + superior. "vzo" = vazio.</p>
+
+            <h3>Métodos Principais</h3>
+            <ul>
+                <li><code>Peca()</code>: Construtor padrão criando peça vazia ("vz", 'o').</li>
+                <li><code>Peca(cor, parte)</code>: Construtor definindo cor e parte.</li>
+                <li><code>getCor(), setCor()</code>: Obter e definir a cor.</li>
+                <li><code>getParte(), setParte()</code>: Obter e definir a parte.</li>
+                <li><code>toString()</code>: Retorna a representação 3-char da peça (ex.: "vms").</li>
+            </ul>
+        </section>
+
+        <section id="tinyxml2">
+            <h2>tinyxml2.cpp/h</h2>
+            <p><code>tinyxml2</code> é uma biblioteca externa, independente, usada para processar arquivos XML de maneira simples.</p>
+            <p>No contexto do projeto, ela é usada em:</p>
+            <ul>
+                <li><code>carregarEstadoInicial()</code>: Ler o arquivo XML contendo o estado do Elo.</li>
+                <li><code>salvarEstadoEmArquivo()</code>: Gerar o XML com o estado atual do Elo e histórico de ações.</li>
+            </ul>
+
+            <h3>Principais Componentes da tinyxml2</h3>
+            <ul>
+                <li><code>XMLDocument</code>: Representa o documento XML.</li>
+                <li><code>XMLElement</code>: Elementos XML (tags).</li>
+                <li><code>XMLAttribute</code>: Atributos dos elementos.</li>
+                <li><code>XMLText</code>: Texto dentro dos elementos.</li>
+                <li>Métodos como <code>LoadFile()</code>, <code>SaveFile()</code>, <code>FirstChildElement()</code>, <code>NextSiblingElement()</code> para navegar e manipular a árvore XML.</li>
+            </ul>
+
+            <p>Documentação oficial: <a href="https://leethomason.github.io/tinyxml2/" target="_blank" rel="noopener noreferrer">tinyxml2</a></p>
+        </section>
+
+        <section id="teste-xml">
+            <h2>teste.xml</h2>
+            <p>O arquivo <code>teste.xml</code> é um exemplo de estado inicial do Elo. Ele possui uma estrutura como:</p>
+            <pre><code>&lt;EloMaluco&gt;
+  &lt;EstadoAtual&gt;
+    &lt;row&gt;
+      &lt;col&gt;vmm&lt;/col&gt;
+      &lt;col&gt;ams&lt;/col&gt;
+      &lt;col&gt;vrs&lt;/col&gt;
+      &lt;col&gt;vzo&lt;/col&gt;
+    &lt;/row&gt;
+    ...
+  &lt;/EstadoAtual&gt;
+&lt;/EloMaluco&gt;</code></pre>
+            <p>Cada &lt;col&gt; contém a string de 3 caracteres da peça naquela posição do Elo. A classe <code>EloMaluco</code> usa esse layout para reconstruir o estado interno.</p>
+        </section>
+
+        <section id="main">
+            <h2>main.cpp</h2>
+            <p>O arquivo <code>main.cpp</code> é o ponto de entrada do programa. Seu fluxo principal é:</p>
+            <ol>
+                <li>Solicitar ao usuário se deseja carregar um estado de um arquivo XML ou gerar um estado aleatório.</li>
+                <li>Exibir o estado atual do Elo.</li>
+                <li>Aguardar ações do usuário (ex.: "mfc" para mover face abaixo da vazia para cima, "rse" para rotacionar linha superior para a esquerda, etc.) ou o comando "resolver" para iniciar a busca A* automática.</li>
+                <li>Após concluir ou sair, salva o estado atual em <code>estado_atual.xml</code>.</li>
+            </ol>
+        </section>
+
+        <section id="Autores">
+            <h2>Autores</h2>
+            <p>Adriel dos Santos Cunha 2021023510</p>
+            <p>João Vitor Silva 2023004944</p>
+        </section>
+
+      
+    </main>
+</body>
+</html>
